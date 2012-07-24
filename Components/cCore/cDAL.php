@@ -62,9 +62,17 @@ class cDAL {
                         throw new Exception('Invalid SQL query');
                     } else {
                         $result = self::RunQuery($query);
+                        while($row = mysqli_fetch_assoc($result)){
+                            ++$z;
+                        }
+                        while($row = $result->fetch_array()) {
+                            cCommon::do_dump($row);
+                        }
+                        cCommon::do_dump($result);
                         self::FreeMoreResults();
                     }
                 }
+                cCommon::do_dump($result);
                 $recordset = new cRecordset($result);
                 if ($this->MYGLOBALS->DB()->errno) {
                     $recordset->SetInternalData("SQLErrorNo", $this->MYGLOBALS->DB()->errno);
@@ -287,6 +295,10 @@ class cDAL {
         if($result) {
             $data = $result->fetch_assoc();
             $retResult = $result;
+
+            cCommon::do_dump($result);
+            cCommon::do_dump($retResult);
+            //echo "Field count: ".$con->field_count;
 
             //$result->free();
             while(@$con->next_result()) {

@@ -32,11 +32,12 @@ class cRecordset implements IMoveable {
 
 
 
-    public function __construct($aResult = null) {
+    public function __construct(&$aResult = null) {
         //$this->action = $this->SetAction("Update");
         $i = 0;
         if ($aResult != null) {
-            while($row = $aResult->fetch_assoc()) {
+            cCommon::do_dump($aResult);
+            /*while ($row = $aResult->fetch_assoc()) {
                 $this->AddRow($row);
 
                 //naplneni nazvu sloupcu
@@ -47,6 +48,23 @@ class cRecordset implements IMoveable {
                     }
 
                     //$this->SetFields($aResult);
+                }
+            }
+            echo "kokot";*/
+            while($row = $aResult->fetch_array()) {
+                cCommon::do_dump($row);
+            }
+
+            $rows = $aResult->fetch_all();
+            foreach($rows as $row) {
+                $this->AddRow($row);
+
+                //naplneni nazvu sloupcu
+                if (!$this->isFieldsSet) {
+                    $this->fields = new cFields($aResult);
+                    if($this->fields != false) {
+                        $this->isFieldsSet = true;
+                    }
                 }
             }
         }
